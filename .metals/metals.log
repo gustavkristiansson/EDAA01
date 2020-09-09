@@ -1,0 +1,5 @@
+2020.09.09 15:49:53 INFO  started: Metals version 0.9.3 in workspace '/Users/gustav.kristiansson/Code' for client vscode.
+2020.09.09 15:49:54 INFO  time: initialize in 1.73s
+2020.09.09 15:49:55 WARN  no build tool detected in workspace '/Users/gustav.kristiansson/Code'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.09.09 15:49:55 INFO  no build target: using presentation compiler with only scala-library
+2020.09.09 15:49:59 WARN  no build target for: /Users/gustav.kristiansson/Code/Scala/pgk-grundkurs/w2/Test1.scala
