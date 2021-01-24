@@ -1,7 +1,6 @@
 package textproc;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,23 +9,24 @@ import java.util.TreeMap;
 
 public class GeneralWordCounter implements TextProcessor {
 	private Set<String> stopwords = new HashSet<String>();
-	private Map<String, Integer> m = new TreeMap<String, Integer>();
+	private Map<String, Integer> wordFreq;
 	
 	public GeneralWordCounter(Set<String> stopwords) {
+		wordFreq = new TreeMap<String, Integer>();
 		this.stopwords = stopwords;	
 	}
 	
 	public void process(String w) {
 		if (!stopwords.contains(w)) {
-			if(m.containsKey(w)) {
-				m.put(w, m.get(w) + 1);
+			if(wordFreq.containsKey(w)) {
+				wordFreq.put(w, wordFreq.get(w) + 1);
 			}
-			else m.put(w, 0);
+			else wordFreq.put(w, 0);
 		}	
 	}
 
 	public void report() {
-		Set<Map.Entry<String, Integer>> wordSet = m.entrySet();
+		Set<Map.Entry<String, Integer>> wordSet = wordFreq.entrySet();
 		List<Map.Entry<String, Integer>> wordList = new ArrayList<>(wordSet);
 		wordList.sort(new WordCountComparator());
 		
