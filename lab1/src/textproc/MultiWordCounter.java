@@ -10,16 +10,13 @@ public class MultiWordCounter implements TextProcessor {
 		for(String word : words) {
 			m.put(word, 0);
 		}
-		for(String key : m.keySet()) {
-			process(key);	
-		}
 	}
 	
 	public void process(String w) {
 		if(m.containsKey(w)) {
 			Integer count = m.get(w);
 			m.put(w, count + 1);
-		}	
+		}
 	}
 
 	public void report() {
