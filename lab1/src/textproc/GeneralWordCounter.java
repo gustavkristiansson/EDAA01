@@ -21,7 +21,7 @@ public class GeneralWordCounter implements TextProcessor {
 			if(wordFreq.containsKey(w)) {
 				wordFreq.put(w, wordFreq.get(w) + 1);
 			}
-			else wordFreq.put(w, 0);
+			else wordFreq.put(w, 1);
 		}	
 	}
 
@@ -36,5 +36,9 @@ public class GeneralWordCounter implements TextProcessor {
 		//for(String key : m.keySet()) {
 		//	if(m.get(key) >= 200) System.out.println(key + ": " + m.get(key));
 		//}
+	}
+	
+	public List<Map.Entry<String, Integer>> getWordList() {
+		return new ArrayList<Map.Entry<String, Integer>>(wordFreq.entrySet());
 	}
 }

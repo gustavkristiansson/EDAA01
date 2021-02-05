@@ -35,7 +35,6 @@ class TestAppendFifoQueue {
 		assertTrue(IntQ1.isEmpty() && IntQ2.isEmpty(), "Cannot append empty queue");
 	}
 	
-	
 	/**
 	 * Test concatenation of two non-empty Queues.
 	 */
@@ -48,8 +47,11 @@ class TestAppendFifoQueue {
 		IntQ2.offer(5);
 		IntQ2.offer(6);
 		IntQ1.append(IntQ2);
-		assertTrue(IntQ2.size() == 0, "Queue not empty after append");
-		assertTrue(IntQ1.size() == 6);
+		assertTrue(IntQ2.size() == 0, "Queue not empty after append.");
+		assertTrue(IntQ1.size() == 6, "Nothing appended to Queue.");
+		for(int i = 1; i < IntQ1.size(); i++) {
+			assertTrue(IntQ1.poll() == i, "Order not correct");
+		}
 	}
 	
 	/**
@@ -61,6 +63,9 @@ class TestAppendFifoQueue {
 		IntQ1.append(IntQ2);
 		assertTrue(IntQ1.size() == 1);
 		assertTrue(IntQ2.size() == 0, "Queue appended not empty");
+		for(int i = 1; i < IntQ1.size(); i++) {
+			assertTrue(IntQ1.poll() == i, "Order not correct");
+		}
 	}
 	
 	/**
@@ -72,8 +77,11 @@ class TestAppendFifoQueue {
 		IntQ1.offer(2);
 		IntQ1.offer(3);
 		IntQ2.append(IntQ1);
-		assertTrue(IntQ1.size() == 0, "Queue appended not empty" );
+		assertTrue(IntQ1.size() == 0, "Queue appended not empty");
 		assertTrue(IntQ2.size() == 3);
+		for(int i = 1; i < IntQ2.size(); i++) {
+			assertTrue(IntQ2.poll() == i, "Order not correct");
+		}
 	}
 	
 	/**
@@ -81,8 +89,6 @@ class TestAppendFifoQueue {
 	 */
 	@Test
 	void testAppendToSelf() {
-		assertArrayEquals("Cannot append to self", IntQ1, IntQ1);
+		assertThrows(IllegalArgumentException.class, () -> IntQ1.append(IntQ1));
 	}
-	
-
 }

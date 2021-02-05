@@ -37,15 +37,7 @@ public class FifoQueue<E> extends AbstractQueue<E> implements Queue<E> {
 	 */
 	public int size() {	
 		return size;
-		
-		//if(last == null) {
-			//return 0;
-		//} else while(last != null) {
-			//size++;
-		//return size;
-		//}
 	}
-	
 	
 	/**	
 	 * Retrieves, but does not remove, the head of this queue, 
@@ -86,9 +78,32 @@ public class FifoQueue<E> extends AbstractQueue<E> implements Queue<E> {
 	 */
 	public void append(FifoQueue<E> q) {
 		if(this == q) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Cannot append Queue to self.");
 		}
-		this.addAll(q);	
+		if(size == 0) {
+			size = q.size();
+			last = q.last;
+			//last.next = q.last.next;
+		} else if(q.size() != 0) {
+			QueueNode<E> temp = q.last.next;
+			for(int i = 0; i < q.size(); i++) {
+				QueueNode<E> n = new QueueNode<E>(temp.element);
+				n.next = last.next;
+				last.next = n;
+				last = n;
+				temp = temp.next;
+				size++;
+			}	
+		}
+		q.size = 0;
+		q.last = null;
+		
+//		this.addAll(q);
+//		q.clear();
+		
+//		while(q.size() != 0) {
+//			offer(q.poll());
+//		}
 	}
 	
 	
@@ -102,22 +117,26 @@ public class FifoQueue<E> extends AbstractQueue<E> implements Queue<E> {
 	
 	private class QueueIterator implements Iterator<E> {
 		private QueueNode<E> pos;
+		private int x;
 		
 		/**Constructor*/
 		private QueueIterator() {
 			pos = last;
+			x = 1;
 		}
 		
 		public boolean hasNext() {
-			return pos != null;
+			return pos != null && x <= size;
 		}
 		
 		public E next() {
 			if(!hasNext()) {
 				throw new NoSuchElementException();
-			} else {
-			return pos.next.element;
-			}	
+			} 	
+			E element = pos.next.element;
+			pos = pos.next;
+			x++;
+			return element;
 		}
 	}
 	
@@ -131,4 +150,3 @@ public class FifoQueue<E> extends AbstractQueue<E> implements Queue<E> {
 		}
 	}
 }
-
