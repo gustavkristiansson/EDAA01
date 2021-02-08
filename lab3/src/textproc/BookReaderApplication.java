@@ -12,9 +12,9 @@ import java.util.Set;
 
 public class BookReaderApplication {
 	private static String text = "nilsholg.txt";
-	public static final Set<String> stopwords = new HashSet<String>();
+	private static final Set<String> stopwords = new HashSet<String>();
 	
-	public static void scanStopWords() throws FileNotFoundException {
+	private static void scanStopWords() throws FileNotFoundException {
 		Scanner scan = new Scanner(new File("undantagsord.txt"));
 		while(scan.hasNext()) {
 			String word = scan.next();
@@ -29,9 +29,8 @@ public class BookReaderApplication {
 		GeneralWordCounter counter = new GeneralWordCounter(stopwords);
 		BookReaderController controller = new BookReaderController(counter);
 		
-		List<TextProcessor> textList = new ArrayList<TextProcessor>();
-				
-		textList.add(counter);		
+		List<TextProcessor> textList = new ArrayList<TextProcessor>();		
+		textList.add(counter);	
 		
 		Scanner s = new Scanner(new File(text));
 		s.findWithinHorizon("\uFEFF", 1);
@@ -39,10 +38,8 @@ public class BookReaderApplication {
 		
 		while (s.hasNext()) {
 			String word = s.next().toLowerCase();
-			
 			textList.forEach(v -> v.process(word));
 		}
 		s.close();
 	}
-
 }
