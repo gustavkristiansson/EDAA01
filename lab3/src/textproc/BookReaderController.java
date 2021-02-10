@@ -2,13 +2,16 @@ package textproc;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.event.ActionListener;
 import java.util.Map;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -29,12 +32,12 @@ public class BookReaderController {
 		JScrollPane scrollPane = new JScrollPane(listView);
 		
 		JPanel buttonPanel = new JPanel();
-		JButton frequency_button = new JButton("Frequency");
+		JRadioButton frequency_button = new JRadioButton("Frequency");
 		frequency_button.addActionListener(event -> {
 			list.sort((e1, e2) -> e2.getValue() - e1.getValue());
 		});
 		
-		JButton alphabetic_button = new JButton("Alphabetic");
+		JRadioButton alphabetic_button = new JRadioButton("Alphabetic");
 		alphabetic_button.addActionListener(event -> {
 			list.sort((e1, e2) -> e1.getKey().compareTo(e2.getKey()));
 		});
@@ -42,21 +45,32 @@ public class BookReaderController {
 		JTextField searchField = new JTextField(20);
 		
 		JButton find_button = new JButton("Find");
-		find_button.addActionListener(event -> {
+		
+		ActionListener listener = (event -> {
 			String search = searchField.getText().strip().toLowerCase();
 			int i = 0;
+			boolean found = false;
 			while(i < list.getSize()) {
 				if(search.equals(list.getElementAt(i).getKey())) {
-					listView.setSelectedIndex(i);
 					listView.ensureIndexIsVisible(i);
+					found = true;
 					break;
 				}
 			i++;
-			}	
+			}
+			if(found) {
+				listView.setSelectedIndex(i);	
+			} else {
+				JOptionPane.showMessageDialog(pane, "Cannot find " + search);
+			}
 		});
-//		find_button.addKeyListener();
 		
+		searchField.addActionListener(listener);
+		find_button.addActionListener(listener);
 		
+		ButtonGroup btngroup = new ButtonGroup();
+		btngroup.add(frequency_button);
+		btngroup.add(alphabetic_button);
 	
 		buttonPanel.add(alphabetic_button);
 		buttonPanel.add(frequency_button);
