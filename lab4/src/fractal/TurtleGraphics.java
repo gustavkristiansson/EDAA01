@@ -113,6 +113,10 @@ public class TurtleGraphics {
 	public void penDown() {
 		isPenDown = true;
 	}
+	
+	public void penUp() {
+		isPenDown = false;
+	}
 
 	/** 
 	 * Returns the width of the turtles drawing area. 

@@ -80,6 +80,7 @@ public class BookReaderController {
 		pane.add(scrollPane);
 		pane.add(buttonPanel, BorderLayout.SOUTH);
 		
+		frame.setLocationRelativeTo(null);
 		frame.pack();
 		frame.setVisible(true);	
 	}
