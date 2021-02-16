@@ -1,5 +1,7 @@
 package mountain;
 
+import java.util.HashMap;
+
 import fractal.*;
 
 public class Mountain extends Fractal{
@@ -7,13 +9,16 @@ public class Mountain extends Fractal{
 	private Point b;
 	private Point c;
 	private double dev;
+	private HashMap<Side, Point> sideMap = new HashMap<>();
+	//private double random = RandomUtilities.randFunc(dev);
+	private double random = 0;
 	
-	
-	public Mountain(Point a, Point b, Point c) {
+	public Mountain(Point a, Point b, Point c, double dev) {
 		super();
 		this.a = a;
 		this.b = b;
 		this.c = c;
+		this.dev = dev;
 	}
 
 	@Override
@@ -27,9 +32,6 @@ public class Mountain extends Fractal{
 	}
 	
 	private void fractalTriangle(TurtleGraphics turtle, int order, Point a, Point b, Point c, double dev) {
-		double rand1 = RandomUtilities.randFunc(dev);
-		double rand2 = RandomUtilities.randFunc(dev);
-		double rand3 = RandomUtilities.randFunc(dev);
 		
 		if(order == 0) {
 			turtle.moveTo(a.getX(), a.getY());
@@ -38,36 +40,39 @@ public class Mountain extends Fractal{
 			turtle.forwardTo(c.getX(), c.getY());
 			turtle.forwardTo(a.getX(), a.getY());
 		} else {
-			Point mLeft = new Point((a.getX() + b.getX()) / 2, (a.getY() + b.getY()) / 2);
-			Point mRight = new Point((b.getX() + c.getX()) / 2, (b.getY() + c.getY()) / 2);
-			Point mBottom = new Point((a.getX() + c.getX()) / 2, (a.getY() + c.getY()) / 2);
+			random = (int)RandomUtilities.randFunc(dev);
+			Point mLeft = midPoint(a, b);
+			Point mBottom = midPoint(a, c);
+			Point mRight = midPoint(b, c);
 			
-			//Toppentriangeln
-			fractalTriangle(turtle, order - 1, mLeft, b, mRight, dev);
+			//Lower left
+			fractalTriangle(turtle, order - 1, a, mLeft, mBottom, dev/2);
 			
-			//Mitten
-			fractalTriangle(turtle, order - 1, mLeft, mRight, mBottom, dev);
+			//Top triangle
+			fractalTriangle(turtle, order - 1, mLeft, b, mRight, dev/2);
 			
-			//Nedre vänster
-			fractalTriangle(turtle, order - 1, a, mLeft, mBottom, dev);
+			//Lower right
+			fractalTriangle(turtle, order - 1, mBottom, mRight, c, dev/2);
 			
-			//Nedre höger
-			fractalTriangle(turtle, order - 1, mBottom, mRight, c, dev);
+			//Middle
+			fractalTriangle(turtle, order - 1, mRight, mBottom, mLeft, dev/2);
 		}
 	}
 	
-	private class Triangle {
-		private Point[] points;
-	
-		
-		public Triangle(Point A, Point B, Point C) {
-			this.points = new Point[] {points[0], points[1], points[2]};
+	private Point midPoint(Point a, Point b) {
+		Side newSide = new Side(a, b);
+		if(sideMap.containsKey(newSide)) {
+			Point point = sideMap.get(newSide);
+			sideMap.remove(newSide);
+			return point;
+		} else {
+			int x = a.getX() + (b.getX() - a.getX()) / 2; 
+			//int x = (a.getX() + b.getX()) / 2;
+			//int y = (int)(a.getY() + b.getY() + random) / 2;
+			int y = (int)((a.getY() + (b.getY() - a.getY())/ 2) + random);
+			Point nPoint = new Point(x, y);
+			sideMap.put(newSide, nPoint);
+			return nPoint;
 		}
-		
-		public Point[] getPoints() {
-			return points;
-		}
-		
 	}
-
 }
