@@ -14,7 +14,7 @@ public class Side {
 	public boolean equals(Object obj) {
 		if(obj instanceof Side) {
 			Side s = (Side) obj;
-			return(p1 == s.p1 && p2 == s.p2 || (p2 == s.p1 && p1 == s.p2));
+			return(p1.equals(s.p1) && p2.equals(s.p2) || (p2.equals(s.p1) && p1.equals(s.p2)));
 		}
 		return false;
 	}
