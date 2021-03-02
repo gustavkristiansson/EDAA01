@@ -18,7 +18,23 @@ public class SimpleHashMap<K, V> implements Map<K, V> {
 	 * default load factor (0.75).
 	 */
 	public SimpleHashMap(int capacity) {
+		this.capacity = capacity;
 		table = (Entry<K, V>[]) new Entry[capacity];
+	}
+	
+	public static void main(String[] args) {
+		SimpleHashMap<Integer, Integer> map = new SimpleHashMap();
+		
+		final int n = 10;
+		
+		java.util.Random random = new java.util.Random();
+		
+		for(int i = 0; i < n; i++) {
+			int x = random.nextInt(15) - 5; 
+			map.put(x, x);
+		}
+		
+		System.out.println(map.show());
 	}
 	
 	public String show() {
@@ -36,23 +52,17 @@ public class SimpleHashMap<K, V> implements Map<K, V> {
 			}
 			sb.append("\n");	
 		}
-//		for(int i = 0; i < capacity; i++) {
-//			sb.append(i + " " + table[i].toString());
-//		}
 		return sb.toString();
 	}
 
 	@Override
 	public V get(Object obj) {
 		K key = (K) obj;
-		Entry<K, V> e = table[index(key)];
+		Entry<K, V> entry = find(index(key), key);
 		
-		while(e != null) {
-			if(e.key.equals(key)) {
-				return e.getValue();
-			}
-			e = e.next;
-		}
+		if(entry != null) {	
+			return entry.value;
+		} 
 		return null;
 	}
 
@@ -65,31 +75,38 @@ public class SimpleHashMap<K, V> implements Map<K, V> {
 	public V put(K key, V value) {
 		Entry<K, V> e = find(index(key), key);
 		
-		if((double) size/(double) capacity >= 0.75) {
-			rehash();
-		}
-		
+			
 		if(e == null) {
 			table[index(key)] = new Entry<K, V>(key, value);
 		} else {
-			while(e.next != null && e.key.equals(key)) {
+			while(e.next != null && !e.getKey().equals(key)) {
 				e = e.next;
 			}
 			
 			if(e.key.equals(key)) {
 				V oldValue = e.getValue();
-				e.value = value;
+				e.setValue(value);
+				if(((double) size/(double) capacity) >= 0.75) {
+					rehash();
+				}
 				return oldValue;
 			} else {
 				e.next = new Entry<K, V>(key, value);
 			}
 		}
+		
+		size++;
+		
+		if(((double) size/(double) capacity) >= 0.75) {
+			rehash();
+		}
+		
 		return null;
 	}
 
 	@Override
-	public V remove(Object key) {
-		// TODO Auto-generated method stub
+	public V remove(Object obj) {
+		
 		return null;
 	}
 
@@ -99,7 +116,7 @@ public class SimpleHashMap<K, V> implements Map<K, V> {
 	}
 	
 	private int index(K key) {
-		return Math.abs(key.hashCode() % capacity);
+		return Math.abs(key.hashCode() % table.length);
 	}
 	
 	private Entry<K, V> find(int index, K key) {
@@ -115,23 +132,50 @@ public class SimpleHashMap<K, V> implements Map<K, V> {
 	}
 	
 	private void rehash() {
-		Entry<K, V>[] newTable = (Entry<K, V>[]) new Entry[table.length * 2];
+		Entry<K, V>[] tempTable = (Entry<K, V>[]) new Entry[table.length * 2]; 
+		size = 0;
+		
 		Entry<K, V>[] oldTable = table;
-		table = newTable;
+		
+		table = tempTable;
+		
+		Entry<K, V> temp = null;
 		
 		for(int i = 0; i < oldTable.length; i++) {
-			Entry<K, V> entry = oldTable[i];
+				temp = oldTable[i];
 			
-			if(entry != null) {
-				while(entry.next != null) {
-					put(entry.getKey(), entry.getValue());
-					entry = entry.next;
+			if(temp != null) {
+				while(temp.next != null) {
+					put(temp.getKey(), temp.getValue());
+					temp = temp.next;
 				}
-			put(entry.getKey(), entry.getValue());
+				put(temp.getKey(), temp.getValue());
 			}
 		}
-		oldTable = null;
 	}
+		
+		
+		
+//		int oldCap = capacity;
+//		
+//		
+//		capacity*=2;
+//		
+//		
+//		
+//		
+//		
+//		Entry<K, V> entry = null;
+//		for(int i = 0; i < oldCap; i++) {
+//			entry = oldTable[i];
+//			
+//			while(entry != null) {
+//				put(entry.getKey(), entry.getValue());
+//				entry = entry.next;
+//			}
+//		}
+//		oldTable = null;
+//	}
  	
 	private static class Entry<K, V> implements Map.Entry<K, V> {
 		private K key;
