@@ -3,7 +3,7 @@ package map;
 import java.util.Random;
 
 public class SimpleHashMap<K, V> implements Map<K, V> {
-	Entry<K, V>[] table;
+	private Entry<K, V>[] table;
 	private int size = 0;
 	
 	/** 
